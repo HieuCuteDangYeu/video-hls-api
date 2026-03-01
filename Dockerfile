@@ -6,7 +6,7 @@ WORKDIR /app
 # Copy everything and build
 COPY Cargo.toml Cargo.lock ./
 COPY src/ src/
-RUN cargo build --release
+RUN cargo build --release -j 2
 
 # ── Stage 2: Runtime ─────────────────────────────────
 FROM debian:bookworm-slim
@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ffmpeg \
     ca-certificates \
     libssl3 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
