@@ -1,0 +1,54 @@
+[package]
+name = "video-hls-api"
+version = "0.1.0"
+edition = "2021"
+description = "REST API for HLS video processing with PNG masking and CDN upload"
+authors = ["HieuCuteDangYeu"]
+
+[dependencies]
+# Web framework
+actix-web = "4"
+actix-multipart = "0.7"
+actix-cors = "0.7"
+actix-files = "0.6"
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+futures-util = "0.3"
+
+# Serialization
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# OpenAPI / Swagger
+utoipa = { version = "5", features = ["actix_extras"] }
+utoipa-swagger-ui = { version = "8", features = ["actix-web"] }
+
+# HTTP Client
+reqwest = { version = "0.12", features = ["multipart", "json"] }
+
+# Environment & Config
+dotenvy = "0.15"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-actix-web = "0.7"
+
+# UUID for job tracking
+uuid = { version = "1", features = ["v4", "serde"] }
+
+# Temp file handling
+tempfile = "3"
+
+# Hex encoding
+hex = "0.4"
+
+# MIME types
+mime = "0.3"
+
+# Thiserror for custom errors
+thiserror = "2"
+
+# Bytes
+bytes = "1"

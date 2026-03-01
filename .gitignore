@@ -1,0 +1,7 @@
+/target
+/hls_work
+/playlists
+*.mp4
+*.ts
+*.m3u8
+.env

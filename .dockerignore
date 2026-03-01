@@ -1,0 +1,7 @@
+target/
+hls_work/
+playlists/
+.env
+.git/
+.github/
+*.md
