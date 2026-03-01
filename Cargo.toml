@@ -52,3 +52,9 @@ thiserror = "2"
 
 # Bytes
 bytes = "1"
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = "thin"
+strip = true

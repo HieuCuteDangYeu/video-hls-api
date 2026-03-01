@@ -76,6 +76,13 @@ jobs:
             type=sha,prefix=
             type=raw,value=latest
 
+      - name: Set up swap space
+        run: |
+          sudo fallocate -l 4G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
