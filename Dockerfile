@@ -1,15 +1,20 @@
-# ── Stage 1: Build ────────────────────────────────────
-FROM rust:1.85-bookworm AS builder
-
+# ── Stage 0: Chef planner (dependency cache) ─────────
+FROM rust:1.85-bookworm AS chef
+RUN cargo install cargo-chef
 WORKDIR /app
 
-# Cache dependencies by copying manifests first
-COPY Cargo.toml Cargo.lock* ./
-RUN mkdir src && echo "fn main() {}" > src/main.rs && cargo build --release && rm -rf src
+FROM chef AS planner
+COPY . .
+RUN cargo chef prepare --recipe-path recipe.json
 
-# Copy source and rebuild
-COPY src/ src/
-RUN touch src/main.rs && cargo build --release
+# ── Stage 1: Build ────────────────────────────────────
+FROM chef AS builder
+COPY --from=planner /app/recipe.json recipe.json
+# Build only dependencies (cached unless Cargo.toml/lock change)
+RUN cargo chef cook --release --recipe-path recipe.json
+# Build the actual application
+COPY . .
+RUN cargo build --release
 
 # ── Stage 2: Runtime ─────────────────────────────────
 FROM debian:bookworm-slim
