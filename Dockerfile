@@ -1,19 +1,11 @@
-# ── Stage 0: Chef planner (dependency cache) ─────────
-FROM rust:1.85-bookworm AS chef
-RUN cargo install cargo-chef
+# ── Stage 1: Build ────────────────────────────────────
+FROM rust:1.85-bookworm AS builder
+
 WORKDIR /app
 
-FROM chef AS planner
-COPY . .
-RUN cargo chef prepare --recipe-path recipe.json
-
-# ── Stage 1: Build ────────────────────────────────────
-FROM chef AS builder
-COPY --from=planner /app/recipe.json recipe.json
-# Build only dependencies (cached unless Cargo.toml/lock change)
-RUN cargo chef cook --release --recipe-path recipe.json
-# Build the actual application
-COPY . .
+# Copy everything and build
+COPY Cargo.toml Cargo.lock ./
+COPY src/ src/
 RUN cargo build --release
 
 # ── Stage 2: Runtime ─────────────────────────────────
