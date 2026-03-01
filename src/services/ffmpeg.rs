@@ -1,6 +1,6 @@
 use std::path::{Path, PathBuf};
 use std::process::Command;
-use tracing::{info, error};
+use tracing::{error, info};
 
 use crate::errors::AppError;
 use crate::models::HlsSegment;

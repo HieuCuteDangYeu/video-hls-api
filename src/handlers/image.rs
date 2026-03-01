@@ -1,7 +1,7 @@
 use actix_multipart::Multipart;
 use actix_web::{post, web, HttpResponse};
 use futures_util::StreamExt;
-use tracing::{info, error};
+use tracing::{error, info};
 
 use crate::errors::{AppError, ErrorResponse};
 use crate::handlers::video::AppState;

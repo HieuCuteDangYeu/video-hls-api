@@ -57,30 +57,22 @@ impl ResponseError for AppError {
                 actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
                 "IO_ERROR",
             ),
-            AppError::UploadError(_) => (
-                actix_web::http::StatusCode::BAD_GATEWAY,
-                "UPLOAD_ERROR",
-            ),
+            AppError::UploadError(_) => (actix_web::http::StatusCode::BAD_GATEWAY, "UPLOAD_ERROR"),
             AppError::HttpClientError(_) => (
                 actix_web::http::StatusCode::BAD_GATEWAY,
                 "HTTP_CLIENT_ERROR",
             ),
-            AppError::ValidationError(_) => (
-                actix_web::http::StatusCode::BAD_REQUEST,
-                "VALIDATION_ERROR",
-            ),
-            AppError::NotFound(_) => (
-                actix_web::http::StatusCode::NOT_FOUND,
-                "NOT_FOUND",
-            ),
+            AppError::ValidationError(_) => {
+                (actix_web::http::StatusCode::BAD_REQUEST, "VALIDATION_ERROR")
+            }
+            AppError::NotFound(_) => (actix_web::http::StatusCode::NOT_FOUND, "NOT_FOUND"),
             AppError::InternalError(_) => (
                 actix_web::http::StatusCode::INTERNAL_SERVER_ERROR,
                 "INTERNAL_ERROR",
             ),
-            AppError::MultipartError(_) => (
-                actix_web::http::StatusCode::BAD_REQUEST,
-                "MULTIPART_ERROR",
-            ),
+            AppError::MultipartError(_) => {
+                (actix_web::http::StatusCode::BAD_REQUEST, "MULTIPART_ERROR")
+            }
         };
 
         HttpResponse::build(status).json(ErrorResponse {

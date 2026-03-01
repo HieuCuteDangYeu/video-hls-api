@@ -40,12 +40,9 @@ impl AppConfig {
             playlists_dir: env::var("PLAYLISTS_DIR").unwrap_or_else(|_| "./playlists".to_string()),
             cdn_upload_endpoint: env::var("CDN_UPLOAD_ENDPOINT")
                 .expect("CDN_UPLOAD_ENDPOINT must be set"),
-            cdn_csrf_token: env::var("CDN_CSRF_TOKEN")
-                .expect("CDN_CSRF_TOKEN must be set"),
-            cdn_uuid: env::var("CDN_UUID")
-                .expect("CDN_UUID must be set"),
-            cdn_cookie: env::var("CDN_COOKIE")
-                .expect("CDN_COOKIE must be set"),
+            cdn_csrf_token: env::var("CDN_CSRF_TOKEN").expect("CDN_CSRF_TOKEN must be set"),
+            cdn_uuid: env::var("CDN_UUID").expect("CDN_UUID must be set"),
+            cdn_cookie: env::var("CDN_COOKIE").expect("CDN_COOKIE must be set"),
             hls_segment_duration: env::var("HLS_SEGMENT_DURATION")
                 .ok()
                 .and_then(|s| s.parse().ok())

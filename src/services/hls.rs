@@ -35,7 +35,10 @@ pub fn rewrite_playlist(
     // Upgrade HLS version for BYTERANGE support
     m3u8 = m3u8.replace("#EXT-X-VERSION:3", "#EXT-X-VERSION:4");
 
-    info!("Playlist rewritten with {} BYTERANGE entries", upload_results.len());
+    info!(
+        "Playlist rewritten with {} BYTERANGE entries",
+        upload_results.len()
+    );
     Ok(m3u8)
 }
 

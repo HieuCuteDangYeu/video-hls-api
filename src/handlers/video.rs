@@ -4,14 +4,13 @@ use futures_util::StreamExt;
 use std::collections::HashMap;
 use std::io::Write;
 use std::sync::Mutex;
-use tracing::{info, error};
+use tracing::{error, info};
 use uuid::Uuid;
 
 use crate::config::AppConfig;
 use crate::errors::{AppError, ErrorResponse};
 use crate::models::*;
 use crate::services::{ffmpeg, hls, upload};
-
 
 /// Shared application state holding completed job results.
 pub struct AppState {
@@ -96,9 +95,8 @@ pub async fn upload_video(
         }
     }
 
-    let video_path = video_path.ok_or_else(|| {
-        AppError::ValidationError("Missing required field: `video`".to_string())
-    })?;
+    let video_path = video_path
+        .ok_or_else(|| AppError::ValidationError("Missing required field: `video`".to_string()))?;
 
     let seg_dur = segment_duration.unwrap_or(state.config.hls_segment_duration);
     if !(1..=30).contains(&seg_dur) {

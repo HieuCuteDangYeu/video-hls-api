@@ -63,8 +63,6 @@ pub struct JobResult {
     pub segments_uploaded: usize,
 }
 
-
-
 /// Health check response.
 #[derive(Debug, Serialize, ToSchema)]
 pub struct HealthResponse {

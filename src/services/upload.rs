@@ -1,5 +1,5 @@
 use reqwest::Client;
-use tracing::{info, warn, error};
+use tracing::{error, info, warn};
 
 use crate::config::AppConfig;
 use crate::errors::AppError;
@@ -53,7 +53,10 @@ pub async fn upload_segment(
 
     let form = reqwest::multipart::Form::new().part("Filedata", file_part);
 
-    info!("Uploading segment {} ({} bytes + {} mask)", segment.filename, original_size, PNG_MASK_SIZE);
+    info!(
+        "Uploading segment {} ({} bytes + {} mask)",
+        segment.filename, original_size, PNG_MASK_SIZE
+    );
 
     let response = client
         .post(&config.cdn_upload_endpoint)
@@ -76,13 +79,20 @@ pub async fn upload_segment(
     }
 
     let cdn_response: CdnUploadResponse = serde_json::from_str(&body).map_err(|e| {
-        AppError::UploadError(format!("Failed to parse CDN response: {} — body: {}", e, body))
+        AppError::UploadError(format!(
+            "Failed to parse CDN response: {} — body: {}",
+            e, body
+        ))
     })?;
 
     match (cdn_response.code, cdn_response.data) {
         (Some(0), Some(data)) if data.url.is_some() => {
             let remote_url = data.url.unwrap();
-            info!("✅ Uploaded {} → {}", segment.filename, &remote_url[..remote_url.len().min(80)]);
+            info!(
+                "✅ Uploaded {} → {}",
+                segment.filename,
+                &remote_url[..remote_url.len().min(80)]
+            );
             Ok(SegmentUploadResult {
                 filename: segment.filename.clone(),
                 remote_url,
@@ -90,7 +100,10 @@ pub async fn upload_segment(
             })
         }
         _ => {
-            warn!("CDN upload returned non-success for {}: {}", segment.filename, body);
+            warn!(
+                "CDN upload returned non-success for {}: {}",
+                segment.filename, body
+            );
             Err(AppError::UploadError(format!(
                 "CDN rejected {}: {}",
                 segment.filename, body
@@ -147,7 +160,10 @@ pub async fn upload_image(
     }
 
     let cdn_response: CdnUploadResponse = serde_json::from_str(&body).map_err(|e| {
-        AppError::UploadError(format!("Failed to parse CDN response: {} — body: {}", e, body))
+        AppError::UploadError(format!(
+            "Failed to parse CDN response: {} — body: {}",
+            e, body
+        ))
     })?;
 
     match (cdn_response.code, cdn_response.data) {
