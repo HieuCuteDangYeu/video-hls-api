@@ -29,7 +29,7 @@ A Rust REST API that uploads videos, slices them into HLS segments via FFmpeg, m
                             │
                             ▼
                    ┌──────────────────┐
-                   │  Response:        │  JSON with playlist + player URL
+                   │  Response:        │  JSON with playlist + job ID
                    │  UploadResponse   │
                    └──────────────────┘
 ```
@@ -115,7 +115,7 @@ video-hls-api/
         ├── mod.rs
         ├── ffmpeg.rs        # FFmpeg slicing logic
         ├── upload.rs        # PNG masking + CDN upload
-        └── hls.rs           # M3U8 rewriting + HTML player generation
+        └── hls.rs           # M3U8 rewriting + playlist saving
 ```
 
 ## Environment Variables
@@ -140,7 +140,7 @@ video-hls-api/
 3. **Mask** — Each `.ts` segment is prepended with a 67-byte valid 1×1 PNG header
 4. **Upload** — Masked files are uploaded to the CDN as `.png` images
 5. **Rewrite** — The M3U8 playlist replaces local filenames with CDN URLs and adds `#EXT-X-BYTERANGE:size@67` to skip the PNG header during playback
-6. **Serve** — The API returns the playlist and a self-contained HTML player
+6. **Serve** — The API returns a JSON response with the playlist content and saves the M3U8 file to disk
 
 ## License
 
