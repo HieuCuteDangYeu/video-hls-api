@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Create non-root user
-RUN groupadd -r appuser && useradd -r -g appuser -m appuser
+RUN groupadd -g 1000 appuser && useradd -r -u 1000 -g appuser -m appuser
 
 WORKDIR /app
 
