@@ -46,7 +46,10 @@ fn restore_jobs_from_disk(playlists_dir: &str) -> HashMap<String, JobResult> {
         };
 
         // Count segments by counting #EXTINF lines
-        let segments_count = playlist.lines().filter(|l| l.starts_with("#EXTINF:")).count();
+        let segments_count = playlist
+            .lines()
+            .filter(|l| l.starts_with("#EXTINF:"))
+            .count();
 
         jobs.insert(
             job_id.clone(),
