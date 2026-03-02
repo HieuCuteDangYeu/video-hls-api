@@ -64,9 +64,9 @@ cargo run
 | `GET`    | `/api/v1/health`                  | Health check + FFmpeg status       |
 | `POST`   | `/api/v1/video/upload`            | Upload video → HLS + CDN pipeline |
 | `GET`    | `/api/v1/video/{job_id}/playlist` | Get M3U8 playlist for a job        |
-| `GET`    | `/api/v1/video/{job_id}/player`   | Get HTML player page for a job     |
 | `GET`    | `/api/v1/video/jobs`              | List all processed jobs            |
 | `DELETE` | `/api/v1/video/{job_id}`          | Delete a job from memory           |
+| `POST`   | `/api/v1/image/upload`            | Upload images directly to CDN      |
 
 ## Usage Examples
 
@@ -84,9 +84,13 @@ curl -X POST http://localhost:8080/api/v1/video/upload \
 curl http://localhost:8080/api/v1/video/{job_id}/playlist
 ```
 
-### Open the player
+### Upload images
 
-Navigate to `http://localhost:8080/api/v1/video/{job_id}/player` in your browser.
+```bash
+curl -X POST http://localhost:8080/api/v1/image/upload \
+  -F "images=@photo1.jpg" \
+  -F "images=@photo2.png"
+```
 
 ## Project Structure
 
@@ -105,7 +109,8 @@ video-hls-api/
     ├── handlers/
     │   ├── mod.rs
     │   ├── health.rs        # GET /health
-    │   └── video.rs         # POST /upload, GET /playlist, GET /player, etc.
+    │   ├── image.rs         # POST /image/upload
+    │   └── video.rs         # POST /upload, GET /playlist, GET /jobs, etc.
     └── services/
         ├── mod.rs
         ├── ffmpeg.rs        # FFmpeg slicing logic
