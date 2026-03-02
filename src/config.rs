@@ -36,13 +36,13 @@ impl AppConfig {
                 .unwrap_or(8080),
             work_dir: env::var("WORK_DIR").unwrap_or_else(|_| "./hls_work".to_string()),
             playlists_dir: env::var("PLAYLISTS_DIR").unwrap_or_else(|_| "./playlists".to_string()),
-            
+
             // Use the helper for strings that might be quoted in the .env file
             cdn_upload_endpoint: clean_var("CDN_UPLOAD_ENDPOINT"),
             cdn_csrf_token: clean_var("CDN_CSRF_TOKEN"),
             cdn_uuid: clean_var("CDN_UUID"),
             cdn_cookie: clean_var("CDN_COOKIE"),
-            
+
             hls_segment_duration: env::var("HLS_SEGMENT_DURATION")
                 .ok()
                 .and_then(|s| s.parse().ok())
