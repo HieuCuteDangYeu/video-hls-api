@@ -14,6 +14,55 @@ use utoipa_swagger_ui::SwaggerUi;
 
 use crate::config::AppConfig;
 use crate::handlers::{health, image, video};
+use crate::models::{JobResult, JobStatus};
+
+/// Scan the playlists directory for saved .m3u8 files and rebuild the jobs HashMap.
+fn restore_jobs_from_disk(playlists_dir: &str) -> HashMap<String, JobResult> {
+    let mut jobs = HashMap::new();
+    let dir = std::path::Path::new(playlists_dir);
+    if !dir.exists() {
+        return jobs;
+    }
+
+    let entries = match std::fs::read_dir(dir) {
+        Ok(e) => e,
+        Err(_) => return jobs,
+    };
+
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path.extension().and_then(|e| e.to_str()) != Some("m3u8") {
+            continue;
+        }
+
+        let job_id = match path.file_stem().and_then(|s| s.to_str()) {
+            Some(id) => id.to_string(),
+            None => continue,
+        };
+
+        let playlist = match std::fs::read_to_string(&path) {
+            Ok(content) => content,
+            Err(_) => continue,
+        };
+
+        // Count segments by counting #EXTINF lines
+        let segments_count = playlist.lines().filter(|l| l.starts_with("#EXTINF:")).count();
+
+        jobs.insert(
+            job_id.clone(),
+            JobResult {
+                job_id,
+                status: JobStatus::Completed,
+                playlist,
+                playlist_file: path.to_string_lossy().to_string(),
+                segments_count,
+                segments_uploaded: segments_count,
+            },
+        );
+    }
+
+    jobs
+}
 
 /// OpenAPI documentation definition.
 #[derive(OpenApi)]
@@ -74,14 +123,21 @@ async fn main() -> std::io::Result<()> {
     let config = AppConfig::from_env();
     let bind_addr = format!("{}:{}", config.host, config.port);
 
+    // Restore completed jobs from saved playlists on disk
+    let restored_jobs = restore_jobs_from_disk(&config.playlists_dir);
+    let restored_count = restored_jobs.len();
+
     // Shared application state
     let app_state = web::Data::new(video::AppState {
         config: config.clone(),
         http_client: reqwest::Client::new(),
-        jobs: Mutex::new(HashMap::new()),
+        jobs: Mutex::new(restored_jobs),
     });
 
     info!("🚀 Starting Video HLS API on {}", bind_addr);
+    if restored_count > 0 {
+        info!("♻️  Restored {} job(s) from disk", restored_count);
+    }
     info!(
         "📖 Swagger UI available at http://{}/swagger-ui/",
         bind_addr
